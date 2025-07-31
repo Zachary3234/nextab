@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite"
 // https://cn.vitejs.dev/guide/
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/nextab/',
   plugins: [react(), tsconfigPaths(), tailwindcss()],
   server: {
     allowedHosts: ['.nexcab.top'],
