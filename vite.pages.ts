@@ -7,14 +7,12 @@ import tailwindcss from "@tailwindcss/vite"
 // https://cn.vitejs.dev/guide/
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/nextab/',
   plugins: [react(), tsconfigPaths(), tailwindcss()],
-  server: {
-    allowedHosts: ['.nexcab.top'],
-  },
   build: {
     rollupOptions: {
       input: {
+        main: resolve(__dirname, 'index.html'),
         newtab: resolve(__dirname, 'pages/newtab.html'),
         popup: resolve(__dirname, 'pages/popup.html'),
         sidepanel: resolve(__dirname, 'pages/sidepanel.html'),
