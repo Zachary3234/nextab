@@ -1,0 +1,63 @@
+{
+  "manifest_version": 3,
+  "name": "NexTab",
+  "version": "0.0.1",
+  "description": "This is a chrome extension that offers a various of services in Newtab/Popup/Sidepanel pages.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "pages/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "NexTab"
+  },
+  "chrome_url_overrides": {
+    "newtab": "pages/newtab.html"
+  },
+  "side_panel": {
+    "default_path": "pages/sidepanel.html",
+    "openPanelOnActionClick": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/content.js"],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "background": {
+    "service_worker": "scripts/service.js"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "bookmarks",
+    "history",
+    "sidePanel",
+    "scripting",
+    "notifications",
+    "contextMenus"
+  ],
+  "optional_permissions": [
+    "downloads",
+    "topSites"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["images/*", "fonts/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "default_locale": "zh_CN"
+}
