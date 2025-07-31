@@ -58,6 +58,5 @@
       "resources": ["images/*", "fonts/*"],
       "matches": ["<all_urls>"]
     }
-  ],
-  "default_locale": "zh_CN"
+  ]
 }
