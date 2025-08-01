@@ -12,17 +12,26 @@ export default defineConfig({
   server: {
     allowedHosts: ['.nexcab.top'],
   },
+  resolve: {
+    alias: {
+      '@src': resolve(__dirname, 'src'),
+    },
+  },
   build: {
     rollupOptions: {
       input: {
+        main: resolve(__dirname, 'index.html'),
         newtab: resolve(__dirname, 'pages/newtab.html'),
         popup: resolve(__dirname, 'pages/popup.html'),
         sidepanel: resolve(__dirname, 'pages/sidepanel.html'),
-        content: resolve(__dirname, 'src/content.ts'),
-        service: resolve(__dirname, 'src/service.ts'),
+        options: resolve(__dirname, 'pages/options.html'),
+        content: resolve(__dirname, 'src/content/index.ts'),
+        background: resolve(__dirname, 'src/background/index.ts'),
       },
       output: {
         entryFileNames: 'scripts/[name].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
         manualChunks: undefined,
       }
     }
