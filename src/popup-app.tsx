@@ -1,12 +1,24 @@
-import { useState } from 'react'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '../assets/vite.svg'
+import { useState, useEffect } from 'react'
+import reactLogo from '@src/assets/react.svg'
+import viteLogo from '@src/assets/vite.svg'
 import { HeroUIProvider } from "@heroui/system";
 import { Button } from '@heroui/button'
-import '../assets/tailwind.css'
+import '@src/assets/tailwind.css'
 
 function App() {
+  const [pageInfo, setPageInfo] = useState<{
+    title: string;
+    url: string;
+  } | null>(null)
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      chrome.tabs.sendMessage(tabs[0].id!, { type: 'GET_DOM_INFO' }, response => {
+        setPageInfo(response)
+      })
+    })
+  }, [])
 
   return (
     <HeroUIProvider>
@@ -27,6 +39,14 @@ function App() {
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
+      {pageInfo ? (
+        <div>
+          <p>Title: {pageInfo.title}</p>
+          <p>URL: {pageInfo.url}</p>
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>

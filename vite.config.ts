@@ -10,7 +10,7 @@ export default defineConfig({
   base: './',
   plugins: [react(), tsconfigPaths(), tailwindcss()],
   server: {
-    allowedHosts: ['.nexcab.top'],
+    allowedHosts: ['.nexcab.top']
   },
   resolve: {
     alias: {
@@ -20,13 +20,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
+        // main: resolve(__dirname, 'index.html'),
         newtab: resolve(__dirname, 'pages/newtab.html'),
         popup: resolve(__dirname, 'pages/popup.html'),
         sidepanel: resolve(__dirname, 'pages/sidepanel.html'),
         options: resolve(__dirname, 'pages/options.html'),
-        content: resolve(__dirname, 'src/content/index.ts'),
-        background: resolve(__dirname, 'src/background/index.ts'),
+        content: resolve(__dirname, 'src/content.ts'),
+        background: resolve(__dirname, 'src/background.ts'),
       },
       output: {
         entryFileNames: 'scripts/[name].js',
