@@ -15,6 +15,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@heroui/react": "^2.8.2",
     "framer-motion": "^12.23.11",
+    "interactjs": "^1.10.27",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
