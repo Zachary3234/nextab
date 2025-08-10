@@ -8,9 +8,9 @@ function SearchIcon() {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      stroke-width="2.0"
+      className="size-6 -translate-x-1/8"
       stroke="currentColor"
-      className="size-6"
+      stroke-width="2.0"
     >
       <path
         stroke-linecap="round"
@@ -23,7 +23,8 @@ function SearchIcon() {
 
 export function SearchBar() {
   return (
-    <Form
+    <Form 
+      className="w-full max-w-112"
       onSubmit={(e) => {
         e.preventDefault();
         const query = new FormData(e.currentTarget).get("search");
@@ -31,7 +32,7 @@ export function SearchBar() {
           return;
         }
         window.open(
-          `https://www.google.com/search?q=${encodeURIComponent(
+          `https://www.bing.com/search?q=${encodeURIComponent(
             query.toString()
           )}`,
           "_blank"
@@ -39,11 +40,36 @@ export function SearchBar() {
       }}
     >
       <Input
+        isClearable
+        classNames={{
+          input: [
+            "bg-transparent",
+            "text-black/90 dark:text-white/90",
+            "placeholder:text-default-700/60 dark:placeholder:text-white/60",
+          ],
+          innerWrapper: "bg-transparent",
+          inputWrapper: [
+            "shadow-sm",
+            "bg-default-200/50",
+            "dark:bg-default/60",
+            "backdrop-blur-lg",
+            "backdrop-saturate-200",
+            "hover:bg-default-200/70",
+            "dark:hover:bg-default/70",
+            "group-data-[focus=true]:bg-default-200/50",
+            "dark:group-data-[focus=true]:bg-default/60",
+            "cursor-text!",
+          ],
+        }}
+        radius="full"
+        startContent={(
+          <SearchIcon />
+        )}
         name="search"
         type="text"
-        placeholder="搜索 Google 或输入网址"
-        startContent={<SearchIcon />}
+        placeholder="搜索 Bing 或输入网址"
       />
+      
     </Form>
   );
 }
