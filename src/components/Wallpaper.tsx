@@ -20,7 +20,7 @@ export function Wallpaper({
   const resolvedType = mediaType || detectMediaType(mediaSource);
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden">
+    <>
       {resolvedType === 'video' ? (
         <video
           autoPlay
@@ -36,6 +36,6 @@ export function Wallpaper({
           className="w-full h-full pointer-events-none object-cover"
         />
       )}
-    </div>
+    </>
   );
 }

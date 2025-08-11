@@ -8,19 +8,22 @@ import { SearchBar } from "@src/components/SearchBar";
 import { AppGrid } from "@src/components/AppLayout/AppGrid";
 import { AppDock } from "@src/components/AppLayout/AppDock";
 
-const tempMediaUrls = ["/wallpapers/09.mp4", "/wallpapers/06.jpg"];
+import tempMedia1 from "@src/assets/wallpapers/09.mp4";
+import tempMedia2 from "@src/assets/wallpapers/06.jpg";
+const tempMediaUrls = [tempMedia1, tempMedia2];
+
 
 export default function App() {
   // const [apps, setApps] = useState([]);
   const [wallpaperIndex, setWallpaperIndex] = useState(0);
-  const [darkMode, setDarkMode] = useState("light");
-  const [gridMode, setGridMode] = useState(false);
-  const [dockMode, setDockMode] = useState(false);
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [gridMode, setGridMode] = useState<boolean>(false);
+  const [dockMode, setDockMode] = useState<boolean>(false);
 
   return (
     <HeroUIProvider>
       <main
-        className={`${darkMode} text-foreground bg-background flex-col w-full h-screen relative`}
+        className={`${darkMode ? 'dark' : ''} text-foreground bg-background flex-col w-full h-screen relative`}
       >
         {/* Wallpaper Wrapper */}
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -69,7 +72,7 @@ export default function App() {
           </Button>
           <Button
             onPress={() => {
-              setDarkMode((prev) => (prev === "dark" ? "light" : "dark"));
+              setDarkMode((prev) => !prev);
             }}
           >
             切换主题
