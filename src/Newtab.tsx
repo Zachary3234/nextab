@@ -9,7 +9,7 @@ import { AppGrid } from "@src/components/AppLayout/AppGrid";
 import { AppDock } from "@src/components/AppLayout/AppDock";
 
 import tempMedia1 from "@src/assets/wallpapers/09.mp4";
-import tempMedia2 from "@src/assets/wallpapers/06.jpg";
+import tempMedia2 from "@src/assets/wallpapers/06.png";
 const tempMediaUrls = [tempMedia1, tempMedia2];
 
 
@@ -31,20 +31,28 @@ export default function App() {
         </div>
 
         {/* Content Wrapper */}
-        <div className="absolute inset-0 z-10 h-full grid grid-rows-[auto_auto_1fr_auto]">
-          <div className="mt-8 flex items-end justify-center">
+        <div className="absolute inset-0 z-10 h-full flex flex-col">
+          <div className="shrink-0 grow mt-8 flex flex-col justify-end overflow-hidden">
             <ClockDate locale="zh-CN" />
           </div>
-          <div className={`${gridMode ? 'row-span-1' : 'row-span-2'} mt-4 flex items-center justify-center`}>
-
+          <div className="shrink-0 grow-0 my-4 flex flex-col items-center">
             <SearchBar />
           </div>
-          <AppGrid className={`bg-gray-800 ${gridMode ? 'row-3' : 'row-none invisible'}`}>
-            <span className="bg-white rounded-full">123</span>
-          </AppGrid>
-          <AppDock className="h-20 bg-gray-600">
-            <span className="bg-white rounded-full">1234121</span>
-          </AppDock>
+          <div className={`shrink-1 grow-0 flex flex-col ${gridMode ? 'basis-full' : 'basis-1/2'}`}>
+            <AppGrid className={`bg-gray-800 overflow-y-auto h-full ${gridMode ? '' : 'invisible'}`}>
+              <div className="text-white rounded-full h-10">123</div>
+            </AppGrid>
+            <AppDock className="shrink-0 grow-0 flex flex-col items-center">
+              <div className="flex gap-3 shadow-sm bg-default-200/50 backdrop-blur-lg backdrop-saturate-200 m-4 p-3 rounded-3xl">
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+              </div>
+            </AppDock>
+          </div>
         </div>
 
         {/* Debug Panel */}
