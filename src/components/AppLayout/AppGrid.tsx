@@ -8,8 +8,10 @@ export function AppGrid({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`${className}`} {...props}>
-      {children}
+    <div className="w-full h-full overflow-y-auto flex gap-3 bg-white/10">
+      <div className="w-full h-full flex gap-3">
+        {children}
+      </div>
     </div>
   );
 }

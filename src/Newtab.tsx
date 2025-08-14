@@ -31,27 +31,33 @@ export default function App() {
         </div>
 
         {/* Content Wrapper */}
-        <div className="absolute inset-0 z-10 h-full flex flex-col">
-          <div className="shrink-0 grow mt-8 flex flex-col justify-end overflow-hidden">
+        <div className="absolute inset-0 z-10 h-full flex flex-col items-stretch">
+          <div className="shrink-0 grow mt-8 flex flex-col items-center justify-end overflow-hidden">
             <ClockDate locale="zh-CN" />
           </div>
           <div className="shrink-0 grow-0 my-4 flex flex-col items-center">
             <SearchBar />
           </div>
-          <div className={`shrink-1 grow-0 flex flex-col ${gridMode ? 'basis-full' : 'basis-1/2'}`}>
-            <AppGrid className={`bg-gray-800 overflow-y-auto h-full ${gridMode ? '' : 'invisible'}`}>
-              <div className="text-white rounded-full h-10">123</div>
-            </AppGrid>
-            <AppDock className="shrink-0 grow-0 flex flex-col items-center">
-              <div className="flex gap-3 shadow-sm bg-default-200/50 backdrop-blur-lg backdrop-saturate-200 m-4 p-3 rounded-3xl">
+          <div className={`shrink-1 grow-0 ${gridMode ? 'h-full' : 'h-1/2'} 
+              transition-(height) duration-300 flex flex-col justify-end `}>
+            <div className={`shrink-0 grow flex flex-col items-center ${gridMode ? '' : 'invisible'}`}>
+              <AppGrid>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+              </AppGrid>
+            </div>
+            <div className="shrink-0 grow-0 flex flex-col items-center">
+              <AppDock>
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-              </div>
-            </AppDock>
+              </AppDock>
+            </div>
           </div>
         </div>
 
