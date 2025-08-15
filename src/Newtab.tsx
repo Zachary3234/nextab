@@ -32,15 +32,15 @@ export default function App() {
 
         {/* Content Wrapper */}
         <div className="absolute inset-0 z-10 h-full flex flex-col items-stretch">
-          <div className="shrink-0 grow mt-8 flex flex-col items-center justify-end overflow-hidden">
+          <div className="w-full shrink-0 grow mt-8 flex flex-col items-center justify-end overflow-hidden">
             <ClockDate locale="zh-CN" />
           </div>
-          <div className="shrink-0 grow-0 my-4 flex flex-col items-center">
+          <div className="w-full shrink-0 grow-0 my-4 flex flex-col items-center overflow-hidden">
             <SearchBar />
           </div>
-          <div className={`shrink-1 grow-0 ${gridMode ? 'h-full' : 'h-1/2'} 
-              transition-(height) duration-300 flex flex-col justify-end `}>
-            <div className={`shrink-0 grow flex flex-col items-center ${gridMode ? '' : 'invisible'}`}>
+          <div className={`w-full shrink-1 grow-0 ${gridMode ? 'h-full' : 'h-1/2'} 
+              transition-(height) duration-300 flex flex-col justify-end relative overflow-hidden`}>
+            <div className={`w-full shrink-0 grow flex flex-col items-center ${gridMode ? '' : 'invisible'}`}>
               <AppGrid>
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
@@ -48,15 +48,16 @@ export default function App() {
                 <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
               </AppGrid>
             </div>
-            <div className="shrink-0 grow-0 flex flex-col items-center">
-              <AppDock>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-              </AppDock>
+            <div className={`w-full shrink-0 grow-0 flex flex-col items-center
+              ${dockMode ? 'absolute bottom-0 *:translate-y-full hover:*:translate-y-0' : ''} `}>
+                <AppDock>
+                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
+                </AppDock>
             </div>
           </div>
         </div>
