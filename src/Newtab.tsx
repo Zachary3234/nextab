@@ -10,20 +10,22 @@ import { AppDock } from "@src/components/AppLayout/AppDock";
 
 import tempMedia1 from "@src/assets/wallpapers/09.mp4";
 import tempMedia2 from "@src/assets/wallpapers/06.png";
+import ThemeSwitch from "./components/ThemeSwitch";
 const tempMediaUrls = [tempMedia1, tempMedia2];
-
 
 export default function App() {
   // const [apps, setApps] = useState([]);
   const [wallpaperIndex, setWallpaperIndex] = useState(0);
   const [darkMode, setDarkMode] = useState<boolean>(false);
-  const [gridMode, setGridMode] = useState<boolean>(false);
+  const [gridMode, setGridMode] = useState<boolean>(true);
   const [dockMode, setDockMode] = useState<boolean>(false);
 
   return (
     <HeroUIProvider>
       <main
-        className={`${darkMode ? 'dark' : ''} text-foreground bg-background flex-col w-full h-screen relative`}
+        className={`${
+          darkMode ? "dark" : ""
+        } text-foreground bg-background flex-col w-full h-screen relative`}
       >
         {/* Wallpaper Wrapper */}
         <div className="absolute inset-0 z-0 overflow-hidden">
@@ -32,32 +34,39 @@ export default function App() {
 
         {/* Content Wrapper */}
         <div className="absolute inset-0 z-10 h-full flex flex-col items-stretch">
+          {/* Clock and Date Wrapper */}
           <div className="w-full shrink-0 grow mt-8 flex flex-col items-center justify-end overflow-hidden">
             <ClockDate locale="zh-CN" />
           </div>
+
+          {/* Search Bar Wrapper */}
           <div className="w-full shrink-0 grow-0 my-4 flex flex-col items-center overflow-hidden">
             <SearchBar />
           </div>
-          <div className={`w-full shrink-1 grow-0 ${gridMode ? 'h-full' : 'h-1/2'} 
-              transition-(height) duration-300 flex flex-col justify-end relative overflow-hidden`}>
-            <div className={`w-full shrink-0 grow flex flex-col items-center ${gridMode ? '' : 'invisible'}`}>
-              <AppGrid>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-              </AppGrid>
+
+          {/* App Container Wrapper */}
+          <div
+            className={`w-full shrink-1 grow-0 ${gridMode ? "h-full" : "h-1/2"} 
+              transition-height duration-300 flex flex-col justify-end relative overflow-hidden`}
+          >
+            {/* App Grid Wrapper */}
+            <div
+              className={`w-full shrink-0 grow
+                ${gridMode ? "" : "invisible"}`}
+            >
+              <AppGrid />
             </div>
-            <div className={`w-full shrink-0 grow-0 flex flex-col items-center
-              ${dockMode ? 'absolute bottom-0 *:translate-y-full hover:*:translate-y-0' : ''} `}>
-                <AppDock>
-                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                  <div className="bg-white rounded-xl h-12 w-12 text-center">123</div>
-                </AppDock>
+
+            {/* App Dock Wrapper */}
+            <div
+              className={`w-full shrink-0 grow-0 flex flex-col items-center
+                ${
+                  dockMode
+                    ? "absolute bottom-0 *:translate-y-full hover:*:translate-y-0"
+                    : ""
+                }`}
+            >
+              <AppDock />
             </div>
           </div>
         </div>
@@ -85,13 +94,7 @@ export default function App() {
           >
             切换Dock
           </Button>
-          <Button
-            onPress={() => {
-              setDarkMode((prev) => !prev);
-            }}
-          >
-            切换主题
-          </Button>
+          <ThemeSwitch toggleTheme={setDarkMode} />
         </div>
       </main>
     </HeroUIProvider>

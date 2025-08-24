@@ -20,7 +20,15 @@ export function ClockDate({
         {currentTime.toLocaleTimeString(locale)}
       </div>
       <div className="text-base text-white drop-shadow-md select-none">
-        {currentTime.toLocaleDateString(locale)}
+        {
+          // 格式化为2025年1月1日
+          currentTime.getFullYear() +
+          "年" +
+          (currentTime.getMonth() + 1) +
+          "月" +
+          currentTime.getDate() +
+          "日"
+        }
       </div>
     </div>
   );
