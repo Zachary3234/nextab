@@ -54,7 +54,16 @@ export function AppGrid() {
       </div>
       {/* Pagination */}
       <div className="mt-4 mx-auto">
-        <Button onPress={() => {}}>Move App</Button>
+        <Button onPress={() => {
+          setAppList((prev) => {
+            const newList = [...prev];
+            const movedItem = newList.pop();
+            if (movedItem) {
+              newList.unshift(movedItem);
+            }
+            return newList;
+          });
+        }}>Move App</Button>
         {/* <Pagination isCompact color="warning" initialPage={1} total={10} /> */}
       </div>
     </div>

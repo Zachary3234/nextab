@@ -1,16 +1,5 @@
 import { useState, useRef } from "react";
 
-const AppItemIcon = () => {
-  return (
-    <div
-      className="drag-item absolute w-full h-full rounded-[1rem]
-       overflow-hidden bg-white text-center content-center"
-    >
-      123
-    </div>
-  );
-};
-
 export default function AppItem({
   name = "",
   rowSpan = 1,
@@ -21,6 +10,19 @@ export default function AppItem({
   colSpan?: number;
 }) {
   const dragItemRef = useRef<HTMLDivElement>(null);
+  const rowSpanVariants: Record<number, string> = {
+    1: "row-span-1",
+    2: "row-span-2",
+
+  };
+  const colSpanVariants: Record<number, string> = {
+    1: "col-span-1",
+    2: "col-span-2",
+    4: "col-span-4",
+  };
+  const rowSpanStr = rowSpanVariants[rowSpan] || rowSpanVariants[1];
+  const colSpanStr = colSpanVariants[colSpan] || colSpanVariants[1];
+
 
   return (
     <div
@@ -34,10 +36,19 @@ export default function AppItem({
         dragItemRef.current?.classList.remove("opacity-0");
       }}
       className={`select-none relative size-16 cursor-pointer text-center
-        row-span-${rowSpan} col-span-${colSpan}
+        ${rowSpanStr} ${colSpanStr}
       `}
     >
-      <AppItemIcon />
+      <div
+        className="drag-item absolute w-full h-full rounded-[1rem]
+          overflow-hidden bg-white text-center content-center"
+        onClick={() => {
+          console.log(rowSpan, colSpan);
+          dragItemRef.current?.classList.remove(rowSpanStr, colSpanStr);
+        }}
+      >
+        123
+      </div>
       <div className={`absolute w-full h-6 -bottom-6 text-white`}>{name}</div>
     </div>
   );

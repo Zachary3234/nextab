@@ -11,6 +11,7 @@ import { AppDock } from "@src/components/AppLayout/AppDock";
 import tempMedia1 from "@src/assets/wallpapers/09.mp4";
 import tempMedia2 from "@src/assets/wallpapers/06.png";
 import ThemeSwitch from "./components/ThemeSwitch";
+import { AppLayout } from "./components/AppLayout/AppLayout";
 const tempMediaUrls = [tempMedia1, tempMedia2];
 
 export default function App() {
@@ -51,10 +52,12 @@ export default function App() {
           >
             {/* App Grid Wrapper */}
             <div
-              className={`w-full shrink-0 grow
+              className={`w-full shrink grow
+                overflow-y-auto overflow-x-hidden scrollbar-none
                 ${gridMode ? "" : "invisible"}`}
             >
-              <AppGrid />
+              <AppLayout className="mx-auto" />
+              {/* <AppGrid /> */}
             </div>
 
             {/* App Dock Wrapper */}
