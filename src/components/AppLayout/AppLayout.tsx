@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useState, forwardRef } from "react";
 import { motion } from "framer-motion";
 import { randomPick } from "../../utils/common";
 import {
@@ -6,6 +6,7 @@ import {
   DragOverlay,
   PointerSensor,
   closestCenter,
+  closestCorners,
   useSensor,
   useSensors,
   type UniqueIdentifier,
@@ -21,70 +22,49 @@ import {
 } from "@dnd-kit/sortable";
 
 export type AppItemProps = {
-  id?: string | number;
   rowSpan?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   colSpan?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
   className?: string;
   children?: ReactNode;
 };
 
-export function AppItem({
-  id = 0,
-  rowSpan = 1,
-  colSpan = 1,
-  className = "",
-  children,
-}: AppItemProps) {
-  const { attributes, setNodeRef, listeners, transform, isDragging } =
-    useSortable({
-      id,
-      transition: null,
-    });
+export const AppItem = forwardRef(
+  (
+    { rowSpan = 1, colSpan = 1, className, children }: AppItemProps,
+    ref: React.ForwardedRef<HTMLDivElement>
+  ) => {
+    return (
+      <motion.div
+        // layout
+        ref={ref}
+        style={{
+          width: `calc(${colSpan} * var(--icon-size) + ${colSpan - 1} * var(--gap-size))`,
+          height: `calc(${rowSpan} * var(--icon-size) + ${rowSpan - 1} * var(--gap-size))`,
+          borderRadius: "var(--icon-radius)",
+          gridRow: `span ${rowSpan}`,
+          gridColumn: `span ${colSpan}`,
+        }}
+        className={`relative bg-white shadow-2xl cursor-pointer select-none content-center text-center ${className}`}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+);
+
+function SortableItem(props: AppItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: props.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   return (
-    <motion.div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      style={{
-        width: `calc(${colSpan} * var(--icon-size) + ${colSpan - 1} * var(--gap-size))`,
-        height: `calc(${rowSpan} * var(--icon-size) + ${rowSpan - 1} * var(--gap-size))`,
-        borderRadius: "var(--icon-radius)",
-        gridRow: `span ${rowSpan}`,
-        gridColumn: `span ${colSpan}`,
-      }}
-      className={`relative bg-white shadow-2xl cursor-pointer select-none content-center text-center ${className}`}
-      layout
-      layoutId={String(id)}
-      animate={
-        transform
-          ? {
-              x: transform.x,
-              y: transform.y,
-              scale: isDragging ? 1.05 : 1,
-              zIndex: isDragging ? 1 : 0,
-              boxShadow: isDragging
-                ? "0 0 0 1px rgba(63, 63, 68, 0.05), 0px 15px 15px 0 rgba(34, 33, 81, 0.25)"
-                : undefined,
-            }
-          : {
-              x: 0,
-              y: 0,
-              scale: 1,
-            }
-      }
-      transition={{
-        duration: !isDragging ? 0.25 : 0,
-        scale: {
-          duration: 0.25,
-        },
-        zIndex: {
-          delay: isDragging ? 0 : 0.25,
-        },
-      }}
-    >
-      {children}
-    </motion.div>
+    <AppItem ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {props.children}
+    </AppItem>
   );
 }
 
@@ -155,42 +135,51 @@ export function AppLayout({
 
   return (
     <DndContext
-      collisionDetection={closestCenter}
+      collisionDetection={closestCorners}
       sensors={sensors}
       onDragOver={handleDragOver}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <SortableContext strategy={rectSortingStrategy} items={items}>
-        <div
-          style={
-            {
-              "--icon-size": `${iconSize}px`,
-              "--icon-radius": `${iconRadius}px`,
-              "--gap-size": `${gapSize}px`,
-              maxWidth: `min(${maxWidth}px, calc(${iconSize}px * ${maxCol} + ${gapSize}px * (${maxCol} - 1)))`,
-              display: "grid",
-              gap: "var(--gap-size)",
-              gridAutoFlow: "dense",
-              gridTemplateColumns: `repeat(auto-fill, var(--icon-size))`,
-              gridTemplateRows: `repeat(auto-fill, var(--icon-size))`,
-              justifyContent: "center",
-            } as React.CSSProperties
-          }
-          className={`bg-white/10 ${className}`}
-        >
-          {items.map((item) => (
-            <AppItem key={item.id} {...item}>
-              {`App ${item.id}`}
+      <div
+        style={
+          {
+            "--icon-size": `${iconSize}px`,
+            "--icon-radius": `${iconRadius}px`,
+            "--gap-size": `${gapSize}px`,
+          } as React.CSSProperties
+        }
+      >
+        <SortableContext strategy={rectSortingStrategy} items={items}>
+          <div
+            style={
+              {
+                maxWidth: `min(${maxWidth}px, calc(${iconSize}px * ${maxCol} + ${gapSize}px * (${maxCol} - 1)))`,
+                display: "grid",
+                gap: "var(--gap-size)",
+                gridAutoFlow: "dense",
+                gridTemplateColumns: `repeat(auto-fill, var(--icon-size))`,
+                gridTemplateRows: `repeat(auto-fill, var(--icon-size))`,
+                justifyContent: "center",
+              } as React.CSSProperties
+            }
+            className={`bg-white/10 ${className}`}
+          >
+            {items.map((item) => (
+              <SortableItem key={item.id} id={item.id} {...item}>
+                {`App ${item.id}`}
+              </SortableItem>
+            ))}
+          </div>
+        </SortableContext>
+        <DragOverlay>
+          {activeId ? (
+            <AppItem {...items.find((item) => item.id === activeId)}>
+              {`App ${activeId}`}
             </AppItem>
-          ))}
-        </div>
-      </SortableContext>
-      <DragOverlay>
-        {activeId ? (
-          <AppItem {...items[Number(activeId)]}>{`App ${activeId}`}</AppItem>
-        ) : null}
-      </DragOverlay>
+          ) : null}
+        </DragOverlay>
+      </div>
     </DndContext>
   );
 }
