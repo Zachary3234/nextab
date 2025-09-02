@@ -1,6 +1,7 @@
-import { type ReactNode, useState, forwardRef } from "react";
+import React, { type ReactNode, useState, forwardRef } from "react";
 import { motion } from "framer-motion";
 import { randomPick } from "../../utils/common";
+import { AppItem, type AppItemProps } from "../AppLayout/AppItem";
 import {
   DndContext,
   DragOverlay,
@@ -20,39 +21,9 @@ import {
   arrayMove,
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-export type AppItemProps = {
-  rowSpan?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-  colSpan?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-  className?: string;
-  children?: ReactNode;
-};
-
-export const AppItem = forwardRef(
-  (
-    { rowSpan = 1, colSpan = 1, className, children }: AppItemProps,
-    ref: React.ForwardedRef<HTMLDivElement>
-  ) => {
-    return (
-      <motion.div
-        // layout
-        ref={ref}
-        style={{
-          width: `calc(${colSpan} * var(--icon-size) + ${colSpan - 1} * var(--gap-size))`,
-          height: `calc(${rowSpan} * var(--icon-size) + ${rowSpan - 1} * var(--gap-size))`,
-          borderRadius: "var(--icon-radius)",
-          gridRow: `span ${rowSpan}`,
-          gridColumn: `span ${colSpan}`,
-        }}
-        className={`relative bg-white shadow-2xl cursor-pointer select-none content-center text-center ${className}`}
-      >
-        {children}
-      </motion.div>
-    );
-  }
-);
-
-function SortableItem(props: AppItemProps) {
+function SortableItem(props: AppItemProps & { id: UniqueIdentifier }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: props.id });
 
@@ -61,8 +32,16 @@ function SortableItem(props: AppItemProps) {
     transition,
   };
 
+  console.log("Sortable", props.rowSpan, props.colSpan);
+
   return (
-    <AppItem ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <AppItem
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      {...props}
+    >
       {props.children}
     </AppItem>
   );
@@ -75,7 +54,7 @@ export type AppLayoutProps = {
   gapSize?: number;
   maxCol?: number;
   className?: string;
-  appPropList?: AppItemProps & { id: number }[];
+  appPropList?: AppItemProps & { id: UniqueIdentifier }[];
 };
 
 function genDevAppPropList(count: number) {
@@ -88,7 +67,7 @@ function genDevAppPropList(count: number) {
   };
 
   return Array.from({ length: count }).map((_, i) => ({
-    id: i,
+    id: i as UniqueIdentifier,
     ...randomPick(Object.values(itemSpanOptions)),
   }));
 }
@@ -135,7 +114,7 @@ export function AppLayout({
 
   return (
     <DndContext
-      collisionDetection={closestCorners}
+      collisionDetection={closestCenter}
       sensors={sensors}
       onDragOver={handleDragOver}
       onDragStart={handleDragStart}
@@ -166,7 +145,7 @@ export function AppLayout({
             className={`bg-white/10 ${className}`}
           >
             {items.map((item) => (
-              <SortableItem key={item.id} id={item.id} {...item}>
+              <SortableItem key={item.id} {...item}>
                 {`App ${item.id}`}
               </SortableItem>
             ))}

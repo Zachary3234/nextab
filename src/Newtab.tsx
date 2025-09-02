@@ -5,7 +5,7 @@ import { Button } from "@heroui/button";
 import { Wallpaper } from "@src/components/Wallpaper";
 import { ClockDate } from "@src/components/ClockDate";
 import { SearchBar } from "@src/components/SearchBar";
-import { AppGrid } from "@src/components/AppLayout/AppGrid";
+// import { AppGrid } from "@src/components/AppLayout/AppGrid";
 import { AppDock } from "@src/components/AppLayout/AppDock";
 
 import tempMedia1 from "@src/assets/wallpapers/09.mp4";
