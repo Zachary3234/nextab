@@ -1,4 +1,9 @@
-import React, { type ReactNode, useState, forwardRef } from "react";
+import React, {
+  type ReactNode,
+  useState,
+  useCallback,
+  forwardRef,
+} from "react";
 import { motion } from "framer-motion";
 import { randomPick } from "../../utils/common";
 import { AppItem, type AppItemProps } from "../AppLayout/AppItem";
@@ -32,7 +37,7 @@ function SortableItem(props: AppItemProps & { id: UniqueIdentifier }) {
     transition,
   };
 
-  console.log("Sortable", props.rowSpan, props.colSpan);
+  // console.log("Sortable", props.rowSpan, props.colSpan);
 
   return (
     <AppItem
@@ -73,6 +78,7 @@ function genDevAppPropList(count: number) {
 }
 
 const testAppPropList = genDevAppPropList(48);
+let timer: NodeJS.Timeout | undefined = undefined;
 
 export function AppLayout({
   maxWidth = 900,
@@ -87,30 +93,38 @@ export function AppLayout({
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const sensors = useSensors(useSensor(PointerSensor));
 
-  function handleDragOver({ active, over }: DragOverEvent) {
-    if (!over) {
-      return;
-    }
-
-    setItems((items) =>
-      arrayMove(
-        items,
-        items.findIndex((item) => item.id === active.id),
-        items.findIndex((item) => item.id === over.id)
-      )
-    );
-  }
-
-  function handleDragStart(event: DragStartEvent) {
-    setActiveId(event.active.id);
+  function handleDragStart({ active }: DragStartEvent) {
+    setActiveId(active.id);
   }
 
   function handleDragEnd({ active, over }: DragEndEvent) {
+    // if (over && active.id !== over.id) {
+    //   setItems((items) => {
+    //     const oldIndex = items.findIndex((item) => item.id === active.id);
+    //     const newIndex = items.findIndex((item) => item.id === over.id);
+
+    //     return arrayMove(items, oldIndex, newIndex);
+    //   });
+    // }
+
     setActiveId(null);
   }
 
-  console.log(activeId);
-  console.log(items[Number(activeId)]);
+  function handleDragOver({ active, over }: DragOverEvent) {
+    if (over && active.id !== over.id) {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setItems((items) => {
+          const oldIndex = items.findIndex((item) => item.id === active.id);
+          const newIndex = items.findIndex((item) => item.id === over.id);
+          return arrayMove(items, oldIndex, newIndex);
+        });
+      }, 500);
+    }
+  }
+
+  // console.log(activeId);
+  // console.log(items[Number(activeId)]);
 
   return (
     <DndContext
