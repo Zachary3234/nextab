@@ -7,50 +7,6 @@ import React, {
 import { motion } from "framer-motion";
 import { randomPick } from "../../utils/common";
 import { AppItem, type AppItemProps } from "../AppLayout/AppItem";
-import {
-  DndContext,
-  DragOverlay,
-  PointerSensor,
-  closestCenter,
-  closestCorners,
-  useSensor,
-  useSensors,
-  type UniqueIdentifier,
-  type DragStartEvent,
-  type DragOverEvent,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  useSortable,
-  arrayMove,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-
-function SortableItem(props: AppItemProps & { id: UniqueIdentifier }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  // console.log("Sortable", props.rowSpan, props.colSpan);
-
-  return (
-    <AppItem
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      {...props}
-    >
-      {props.children}
-    </AppItem>
-  );
-}
 
 export type AppLayoutProps = {
   maxWidth?: number;
@@ -59,7 +15,6 @@ export type AppLayoutProps = {
   gapSize?: number;
   maxCol?: number;
   className?: string;
-  appPropList?: AppItemProps & { id: UniqueIdentifier }[];
 };
 
 function genDevAppPropList(count: number) {
@@ -72,13 +27,12 @@ function genDevAppPropList(count: number) {
   };
 
   return Array.from({ length: count }).map((_, i) => ({
-    id: i as UniqueIdentifier,
+    id: i,
     ...randomPick(Object.values(itemSpanOptions)),
-  }));
+  })) as AppItemProps & { id: number }[];
 }
 
 const testAppPropList = genDevAppPropList(48);
-let timer: NodeJS.Timeout | undefined = undefined;
 
 export function AppLayout({
   maxWidth = 900,
@@ -87,92 +41,39 @@ export function AppLayout({
   gapSize = 16,
   maxCol = 16,
   className = "",
-  appPropList = testAppPropList,
 }: AppLayoutProps) {
-  const [items, setItems] = useState(appPropList);
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  const sensors = useSensors(useSensor(PointerSensor));
-
-  function handleDragStart({ active }: DragStartEvent) {
-    setActiveId(active.id);
-  }
-
-  function handleDragEnd({ active, over }: DragEndEvent) {
-    // if (over && active.id !== over.id) {
-    //   setItems((items) => {
-    //     const oldIndex = items.findIndex((item) => item.id === active.id);
-    //     const newIndex = items.findIndex((item) => item.id === over.id);
-
-    //     return arrayMove(items, oldIndex, newIndex);
-    //   });
-    // }
-
-    setActiveId(null);
-  }
-
-  function handleDragOver({ active, over }: DragOverEvent) {
-    if (over && active.id !== over.id) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        setItems((items) => {
-          const oldIndex = items.findIndex((item) => item.id === active.id);
-          const newIndex = items.findIndex((item) => item.id === over.id);
-          return arrayMove(items, oldIndex, newIndex);
-        });
-      }, 500);
-    }
-  }
-
-  // console.log(activeId);
-  // console.log(items[Number(activeId)]);
+  const [items, setItems] = useState(testAppPropList);
 
   return (
-    <DndContext
-      collisionDetection={closestCenter}
-      sensors={sensors}
-      onDragOver={handleDragOver}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
+    <div
+      style={
+        {
+          "--icon-size": `${iconSize}px`,
+          "--icon-radius": `${iconRadius}px`,
+          "--gap-size": `${gapSize}px`,
+        } as React.CSSProperties
+      }
     >
       <div
         style={
           {
-            "--icon-size": `${iconSize}px`,
-            "--icon-radius": `${iconRadius}px`,
-            "--gap-size": `${gapSize}px`,
+            maxWidth: `min(${maxWidth}px, calc(${iconSize}px * ${maxCol} + ${gapSize}px * (${maxCol} - 1)))`,
+            display: "grid",
+            gap: "var(--gap-size)",
+            gridAutoFlow: "dense",
+            gridTemplateColumns: `repeat(auto-fill, var(--icon-size))`,
+            gridTemplateRows: `repeat(auto-fill, var(--icon-size))`,
+            justifyContent: "center",
           } as React.CSSProperties
         }
+        className={`bg-white/10 ${className}`}
       >
-        <SortableContext strategy={rectSortingStrategy} items={items}>
-          <div
-            style={
-              {
-                maxWidth: `min(${maxWidth}px, calc(${iconSize}px * ${maxCol} + ${gapSize}px * (${maxCol} - 1)))`,
-                display: "grid",
-                gap: "var(--gap-size)",
-                gridAutoFlow: "dense",
-                gridTemplateColumns: `repeat(auto-fill, var(--icon-size))`,
-                gridTemplateRows: `repeat(auto-fill, var(--icon-size))`,
-                justifyContent: "center",
-              } as React.CSSProperties
-            }
-            className={`bg-white/10 ${className}`}
-          >
-            {items.map((item) => (
-              <SortableItem key={item.id} {...item}>
-                {`App ${item.id}`}
-              </SortableItem>
-            ))}
-          </div>
-        </SortableContext>
-        <DragOverlay>
-          {activeId ? (
-            <AppItem {...items.find((item) => item.id === activeId)}>
-              {`App ${activeId}`}
-            </AppItem>
-          ) : null}
-        </DragOverlay>
+        {items.map((item) => (
+          <AppItem key={item.id} {...item}>
+            {`App ${item.id}`}
+          </AppItem>
+        ))}
       </div>
-    </DndContext>
+    </div>
   );
 }

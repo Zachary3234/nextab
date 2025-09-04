@@ -1,12 +1,4 @@
-import React, { type ReactNode, forwardRef } from "react";
-
-// export const Item = forwardRef(({ id, ...props }, ref) => {
-//   return (
-//     <div {...props} ref={ref}>
-//       {id}
-//     </div>
-//   );
-// });
+import React, { type ReactNode, useState, useRef } from "react";
 
 export type AppItemProps = {
   rowSpan?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -14,33 +6,7 @@ export type AppItemProps = {
   style?: React.CSSProperties;
   className?: string;
   children?: ReactNode;
-  ref?: React.Ref<HTMLDivElement>;
 };
-
-// export const AppItem = forwardRef(
-//   ({ ...props }, ref: React.ForwardedRef<HTMLDivElement>) => {
-//     // console.log(props);
-
-//     return (
-//       <div
-//         // layout
-//         {...props}
-//         ref={ref}
-//         style={{
-//           ...props.style,
-//           width: `calc(${props.colSpan} * var(--icon-size) + ${props.colSpan - 1} * var(--gap-size))`,
-//           height: `calc(${props.rowSpan} * var(--icon-size) + ${props.rowSpan - 1} * var(--gap-size))`,
-//           borderRadius: "var(--icon-radius)",
-//           gridRow: `span ${props.rowSpan}`,
-//           gridColumn: `span ${props.colSpan}`,
-//         }}
-//         className={`relative bg-white shadow-2xl cursor-pointer select-none content-center text-center ${props.className}`}
-//       >
-//         {props.children}
-//       </div>
-//     );
-//   }
-// );
 
 export function AppItem({
   rowSpan = 1,
@@ -48,14 +14,38 @@ export function AppItem({
   style,
   className,
   children,
-  ref,
   ...props
 }: AppItemProps) {
+  const dragStateRef = useRef({
+    isDragging: false,
+    listenerAttached: false,
+  });
+
+  const [isDragging, setIsDragging] = useState(false);
+  // const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  // 统一事件处理
+  const handleGlobalPointerUp = () => {
+    dragStateRef.current.isDragging = false;
+    setIsDragging(false);
+    document.removeEventListener("pointerup", handleGlobalPointerUp);
+    document.removeEventListener("pointercancel", handleGlobalPointerUp);
+    dragStateRef.current.listenerAttached = false;
+  };
+
   return (
     <div
       // layout
+      onPointerDown={(e) => {
+        if (!dragStateRef.current.listenerAttached) {
+          document.addEventListener("pointerup", handleGlobalPointerUp);
+          document.addEventListener("pointercancel", handleGlobalPointerUp);
+          dragStateRef.current.listenerAttached = true;
+        }
+        dragStateRef.current.isDragging = true;
+        setIsDragging(true);
+      }}
       {...props}
-      ref={ref}
       style={{
         ...style,
         width: `calc(${colSpan} * var(--icon-size) + ${colSpan - 1} * var(--gap-size))`,
@@ -64,7 +54,7 @@ export function AppItem({
         gridRow: `span ${rowSpan}`,
         gridColumn: `span ${colSpan}`,
       }}
-      className={`relative bg-white shadow-2xl cursor-pointer select-none content-center text-center ${className}`}
+      className={`${isDragging ? "absolute" : "relative"} bg-white shadow-2xl cursor-pointer select-none content-center text-center ${className}`}
     >
       {children}
     </div>
